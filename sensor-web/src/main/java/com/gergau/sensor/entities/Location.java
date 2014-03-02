@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 @Entity
 public class Location {
@@ -13,6 +14,9 @@ public class Location {
 	@Id
 	@GeneratedValue
 	private Long id;
+
+	@Version
+	private Long version;
 
 	private String name;
 

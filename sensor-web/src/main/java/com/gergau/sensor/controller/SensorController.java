@@ -14,29 +14,36 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.gergau.sensor.service;
+package com.gergau.sensor.controller;
 
-import java.util.List;
-
-import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.gergau.sensor.dao.SensorDao;
+import com.gergau.sensor.entities.Location;
 import com.gergau.sensor.entities.Sensor;
+import com.gergau.sensor.model.LightSensorModel;
+import com.gergau.sensor.service.SensorService;
 
-@Stateless
-public class SensorService {
-	
+@Named
+public class SensorController {
+
 	@Inject
-	private SensorDao sensorDao;
+	private LightSensorModel sensorModel;
 
-	public void createSensor(Sensor sensor) {
+	@Inject
+	private SensorService sensorService;
+
+	public void createSensor() {
 		System.out.println("Storing new Sensor ...");
-		sensorDao.persist(sensor);
+		Sensor sensor = new Sensor();
+		sensor.setLocation(new Location());
+		sensor.setName("TestSensor_" + sensor);
+		sensorService.createSensor(sensor);
+		sensorModel.getSensors().add(sensor);
 	}
-	
-	public List<Sensor> findLightSensors() {
-		List<Sensor> sensors = sensorDao.findLightSensors();
-		return sensors;
+
+	public String initModel() {
+		sensorModel.setSensors(sensorService.findLightSensors());
+		return "";
 	}
 }

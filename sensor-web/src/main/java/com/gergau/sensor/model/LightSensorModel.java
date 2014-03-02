@@ -2,48 +2,48 @@ package com.gergau.sensor.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartSeries;
 
 import com.gergau.sensor.entities.Sensor;
 
 @Named
-@ApplicationScoped
+@RequestScoped
 public class LightSensorModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Sensor sensor;
+	private List<Sensor> sensors;
 
-	private CartesianChartModel linearModel;
+	private CartesianChartModel linearModel =new CartesianChartModel();
 
-	public LightSensorModel() {
-		createLinearModel();
-	}
 
 	private void createLinearModel() {
-		linearModel = new CartesianChartModel();
-		LineChartSeries series1 = new LineChartSeries();
-		series1.setLabel("Series 1");
-		series1.set(new Date(), Math.random());
-
-
-		linearModel.addSeries(series1);
+		linearModel.clear();
+		for (Sensor sensor : sensors) {
+			LineChartSeries lineChartSeries = new LineChartSeries();
+			lineChartSeries.setLabel(sensor.getName());
+			linearModel.addSeries(lineChartSeries);
+		}
 	}
 
 	public CartesianChartModel getLinearModel() {
+		createLinearModel();
 		return linearModel;
 	}
 
-	public Sensor getSensor() {
-		return sensor;
+	public List<Sensor> getSensors() {
+		return sensors;
 	}
 
-	public void setSensor(Sensor sensor) {
-		this.sensor = sensor;
+	public void setSensors(List<Sensor> sensors) {
+		this.sensors = sensors;
 	}
 }

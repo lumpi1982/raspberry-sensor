@@ -16,22 +16,16 @@
  */
 package com.gergau.sensor.dao;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.primefaces.model.chart.ChartSeries;
-
-import com.gergau.sensor.entities.Location;
 import com.gergau.sensor.entities.Sensor;
 import com.gergau.sensor.entities.SensorMeasure;
-import com.gergau.sensor.model.LightSensorModel;
 
 @Stateless
 public class SensorDao {
@@ -39,17 +33,8 @@ public class SensorDao {
 	@PersistenceContext(unitName = "sensor-pu")
 	private EntityManager entityManager;
 
-	@Inject
-	private LightSensorModel bean;
-
-	private List<Sensor> lightSensors;
-
-	public void createSensor() {
-		System.out.println("Storing new Sensor ...");
-		Sensor sensor = new Sensor();
-		sensor.setLocation(new Location());
+	public void persist(Sensor sensor) {
 		entityManager.persist(sensor);
-		System.out.println("... Stored new Sensor");
 	}
 
 	public List<SensorMeasure> fetchLastMeasures() {
@@ -61,37 +46,11 @@ public class SensorDao {
 	}
 
 	public List<Sensor> findLightSensors() {
-		return entityManager.createNamedQuery(Sensor.FIND_ALL, Sensor.class)
+		List<Sensor> resultList = entityManager.createNamedQuery(Sensor.FIND_ALL, Sensor.class)
 				.getResultList();
-	}
-
-	public List<Sensor> getLightSensors() {
-		return lightSensors;
-	}
-
-	public void setLightSensors(List<Sensor> lightSensors) {
-		this.lightSensors = lightSensors;
-	}
-
-	@Schedule(second = "*/2", minute = "*", hour = "*")
-	public void updateChart() {
-		if (lightSensors == null || lightSensors.size() == 0) {
-			lightSensors = findLightSensors();
+		if(resultList==null) {
+			resultList=new ArrayList<>();
 		}
-		for (Sensor lightSensor : lightSensors) {
-			System.out.println("Setting more Values ...");
-			ChartSeries chartSeries = bean.getLinearModel().getSeries().get(0);
-			SensorMeasure measure = new SensorMeasure();
-			measure.setMeasureTime(new Date());
-			measure.setValue(Math.random() * 100);
-			List<SensorMeasure> measures = fetchLastMeasures();
-			measure.setSensor(lightSensor);
-			chartSeries.getData().clear();
-			for(SensorMeasure measure2 : measures) {
-				chartSeries.getData().put(measure2.getMeasureTime(),
-						measure2.getValue());
-			}
-			storeMeasure(measure);
-		}
+		return resultList;
 	}
 }

@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -20,8 +21,14 @@ public class Sensor {
 	@Id
 	@GeneratedValue
 	private Long id;
+	
+	@Version
+	private Long version;
+	
+	@NotNull
+	private String name;
 
-	@OneToMany
+	@OneToMany(cascade=CascadeType.PERSIST)
 	private List<SensorMeasure> measures;
 
 	@NotNull
@@ -42,5 +49,13 @@ public class Sensor {
 
 	public void setMeasures(List<SensorMeasure> measures) {
 		this.measures = measures;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
