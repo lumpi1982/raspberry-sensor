@@ -16,6 +16,8 @@
  */
 package com.gergau.sensor.controller;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -47,6 +49,7 @@ public class SensorController {
 	}
 
 	public String initModel() {
+		System.out.println("Init Model ...");
 		sensorModel.setSensors(sensorService.findLightSensors());
 		return "";
 	}

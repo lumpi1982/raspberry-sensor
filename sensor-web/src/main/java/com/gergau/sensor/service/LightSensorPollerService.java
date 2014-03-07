@@ -19,6 +19,7 @@ package com.gergau.sensor.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
@@ -42,15 +43,13 @@ public class LightSensorPollerService {
 		this.lightSensors = lightSensors;
 	}
 
-	// @Schedule(second = "*/20", minute = "*", hour = "*")
+	@Schedule(second = "*/20", minute = "*", hour = "*")
 	public synchronized void updateChart() {
 		try {
 			if (lightSensors == null || lightSensors.size() == 0) {
 				lightSensors = sensorDao.findLightSensors();
 			}
 			for (Sensor lightSensor : lightSensors) {
-				System.out.println("Setting more Values for Sensor "
-						+ lightSensor.getName() + " ...");
 				if (lightSensor.getName() == null) {
 					lightSensor.setName("Sensor_" + lightSensor);
 				}
@@ -59,6 +58,9 @@ public class LightSensorPollerService {
 				measure.setValue(Math.random() * 100);
 				measure.setSensor(lightSensor);
 				lightSensor.getMeasures().add(measure);
+				System.out.println("Setting Value " +  measure.getValue() + " for Sensor "
+						+ lightSensor.getName() + " at " + measure.getMeasureTime() + " ...");
+				sensorDao.persist(lightSensor);
 			}
 		} catch (RuntimeException re) {
 			re.printStackTrace();

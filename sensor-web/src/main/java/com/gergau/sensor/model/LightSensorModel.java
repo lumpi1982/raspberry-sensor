@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import org.primefaces.model.chart.CartesianChartModel;
@@ -13,9 +14,10 @@ import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartSeries;
 
 import com.gergau.sensor.entities.Sensor;
+import com.gergau.sensor.entities.SensorMeasure;
 
 @Named
-@RequestScoped
+@SessionScoped
 public class LightSensorModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -30,6 +32,9 @@ public class LightSensorModel implements Serializable {
 		for (Sensor sensor : sensors) {
 			LineChartSeries lineChartSeries = new LineChartSeries();
 			lineChartSeries.setLabel(sensor.getName());
+			for(SensorMeasure measure : sensor.getMeasures()) {
+				lineChartSeries.set(measure.getMeasureTime(), measure.getValue());
+			}
 			linearModel.addSeries(lineChartSeries);
 		}
 	}
