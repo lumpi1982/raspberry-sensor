@@ -1,5 +1,6 @@
 package com.gergau.sensor.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -21,10 +22,10 @@ public class Sensor {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
+
 	@Version
 	private Long version;
-	
+
 	@NotNull
 	private String name;
 
@@ -40,7 +41,14 @@ public class Sensor {
 	}
 
 	public List<SensorMeasure> getMeasures() {
+		if (measures == null) {
+			measures = new ArrayList<>();
+		}
 		return measures;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public void setLocation(Location location) {
@@ -49,10 +57,6 @@ public class Sensor {
 
 	public void setMeasures(List<SensorMeasure> measures) {
 		this.measures = measures;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public void setName(String name) {
