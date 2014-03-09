@@ -17,6 +17,8 @@
 package com.gergau.sensor.service;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,15 +28,17 @@ import com.gergau.sensor.entities.Sensor;
 
 @Stateless
 public class SensorService {
-	
+
+	private Logger logger = Logger.getLogger(SensorService.class.getName());
+
 	@Inject
 	private SensorDao sensorDao;
 
 	public void createSensor(Sensor sensor) {
-		System.out.println("Storing new Sensor ...");
+		logger.log(Level.INFO, "Storing new Sensor ...");
 		sensorDao.persist(sensor);
 	}
-	
+
 	public List<Sensor> findLightSensors() {
 		List<Sensor> sensors = sensorDao.findLightSensors();
 		return sensors;

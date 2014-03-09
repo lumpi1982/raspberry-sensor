@@ -18,6 +18,8 @@ package com.gergau.sensor.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -29,6 +31,9 @@ import com.gergau.sensor.entities.SensorMeasure;
 
 @Singleton
 public class LightSensorPollerService {
+
+	private Logger logger = Logger.getLogger(LightSensorPollerService.class
+			.getName());
 
 	@Inject
 	private SensorDao sensorDao;
@@ -45,26 +50,21 @@ public class LightSensorPollerService {
 
 	@Schedule(second = "*/20", minute = "*", hour = "*")
 	public synchronized void updateChart() {
-		try {
-			if (lightSensors == null || lightSensors.size() == 0) {
-				lightSensors = sensorDao.findLightSensors();
+		lightSensors = sensorDao.findLightSensors();
+		for (Sensor lightSensor : lightSensors) {
+			if (lightSensor.getName() == null) {
+				lightSensor.setName("Sensor_" + lightSensor);
 			}
-			for (Sensor lightSensor : lightSensors) {
-				if (lightSensor.getName() == null) {
-					lightSensor.setName("Sensor_" + lightSensor);
-				}
-				SensorMeasure measure = new SensorMeasure();
-				measure.setMeasureTime(new Date());
-				measure.setValue(Math.random() * 100);
-				measure.setSensor(lightSensor);
-				lightSensor.getMeasures().add(measure);
-				System.out.println("Setting Value " +  measure.getValue() + " for Sensor "
-						+ lightSensor.getName() + " at " + measure.getMeasureTime() + " ...");
-				sensorDao.persist(lightSensor);
-			}
-		} catch (RuntimeException re) {
-			re.printStackTrace();
-			throw re;
+			SensorMeasure measure = new SensorMeasure();
+			measure.setMeasureTime(new Date());
+			measure.setValue(Math.random() * 100);
+			measure.setSensor(lightSensor);
+			lightSensor.getMeasures().add(measure);
+			logger.log(
+					Level.INFO,
+					"Setting Value " + measure.getValue() + " for Sensor "
+							+ lightSensor.getName() + " at "
+							+ measure.getMeasureTime() + " ...");
 		}
 	}
 }

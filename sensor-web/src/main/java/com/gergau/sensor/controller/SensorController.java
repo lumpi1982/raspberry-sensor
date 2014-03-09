@@ -16,8 +16,9 @@
  */
 package com.gergau.sensor.controller;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,6 +31,8 @@ import com.gergau.sensor.service.SensorService;
 @Named
 public class SensorController {
 
+	Logger logger = Logger.getLogger(SensorController.class.getName());
+
 	@Inject
 	private LightSensorModel sensorModel;
 
@@ -40,7 +43,7 @@ public class SensorController {
 	private LightSensorPollerService lightSensorPollerService;
 
 	public void createSensor() {
-		System.out.println("Storing new Sensor ...");
+		logger.log(Level.INFO, "Storing new Sensor ...");
 		Sensor sensor = new Sensor();
 		sensor.setLocation(new Location());
 		sensor.setName("TestSensor_" + sensor);
@@ -49,13 +52,13 @@ public class SensorController {
 	}
 
 	public String initModel() {
-		System.out.println("Init Model ...");
+		logger.log(Level.INFO, "Init Model ...");
 		sensorModel.setSensors(sensorService.findLightSensors());
 		return "";
 	}
 
 	public void updateSensor() {
-		System.out.println("Updating value from Sensor ...");
+		logger.log(Level.INFO, "Updating value from Sensor ...");
 		lightSensorPollerService.updateChart();
 	}
 }
