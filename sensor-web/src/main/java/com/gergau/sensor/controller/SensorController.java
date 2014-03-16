@@ -25,7 +25,6 @@ import javax.inject.Named;
 import com.gergau.sensor.entities.Location;
 import com.gergau.sensor.entities.Sensor;
 import com.gergau.sensor.model.LightSensorModel;
-import com.gergau.sensor.service.LightSensorPollerService;
 import com.gergau.sensor.service.SensorService;
 
 @Named
@@ -39,8 +38,6 @@ public class SensorController {
 	@Inject
 	private SensorService sensorService;
 
-	@Inject
-	private LightSensorPollerService lightSensorPollerService;
 
 	public void createSensor() {
 		logger.log(Level.INFO, "Storing new Sensor ...");
@@ -57,8 +54,4 @@ public class SensorController {
 		return "";
 	}
 
-	public void updateSensor() {
-		logger.log(Level.INFO, "Updating value from Sensor ...");
-		lightSensorPollerService.updateChart();
-	}
 }
