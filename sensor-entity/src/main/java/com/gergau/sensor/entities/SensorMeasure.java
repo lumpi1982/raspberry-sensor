@@ -14,7 +14,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = SensorMeasure.LAST_MEASURES, query = "select sm from SensorMeasure sm order by sm.measureTime desc") })
+@NamedQueries({ @NamedQuery(name = SensorMeasure.LAST_MEASURES, query = "select sm from SensorMeasure sm where sm.sensor=:sensor order by sm.measureTime desc") })
 public class SensorMeasure {
 
 	public static final String LAST_MEASURES = "sensorMeasure.lastMeasures";
@@ -25,7 +25,7 @@ public class SensorMeasure {
 
 	@Version
 	private Long version;
-	
+
 	@NotNull
 	private Date measureTime;
 

@@ -39,7 +39,6 @@ public class SensorController {
 	@Inject
 	private SensorService sensorService;
 
-
 	public void createSensor() {
 		logger.log(Level.INFO, "Storing new Sensor ...");
 		Sensor sensor = new Sensor();
@@ -53,8 +52,8 @@ public class SensorController {
 		logger.log(Level.INFO, "Init Model ...");
 		List<Sensor> sensors = sensorService.findSensors();
 		for (Sensor sensor : sensors) {
-			logger.fine("Found sensor with name: " + sensor.getName() + " and "
-					+ sensor.getMeasures().size() + " measures");
+			logger.fine("Found sensor with name: " + sensor.getName());
+			sensorService.enhanceSensorWithLastMeasures(sensor);
 		}
 		logger.log(Level.FINER, "Found " + sensors.size() + " sensors.");
 		sensorModel.setSensors(sensors);

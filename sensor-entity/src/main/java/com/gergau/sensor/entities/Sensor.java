@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
@@ -33,12 +34,19 @@ public class Sensor {
 	@NotNull
 	private String name;
 
-	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private List<SensorMeasure> measures = new ArrayList<>();
+
+	@Transient
+	private List<SensorMeasure> lastMeasures = new ArrayList<>();
 
 	@NotNull
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Location location;
+
+	public List<SensorMeasure> getLastMeasures() {
+		return lastMeasures;
+	}
 
 	public Location getLocation() {
 		return location;
@@ -53,6 +61,10 @@ public class Sensor {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setLastMeasures(List<SensorMeasure> lastMeasures) {
+		this.lastMeasures = lastMeasures;
 	}
 
 	public void setLocation(Location location) {

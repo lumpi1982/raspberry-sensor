@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.gergau</groupId>
-	<artifactId>sensor-hal-light-sensor</artifactId>
+	<artifactId>sensor-hal-random-test-sensor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -50,6 +50,7 @@
 			<artifactId>sensor-hal-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
 	</dependencies>
 
 	<build>

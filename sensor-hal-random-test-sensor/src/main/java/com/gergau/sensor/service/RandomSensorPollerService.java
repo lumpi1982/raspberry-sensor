@@ -16,38 +16,40 @@
  */
 package com.gergau.sensor.service;
 
-import java.util.List;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
 
-import com.gergau.sensor.dao.SensorDao;
 import com.gergau.sensor.entities.Sensor;
 import com.gergau.sensor.entities.SensorMeasure;
 
-@Stateless
-public class SensorService {
+@Singleton
+public class RandomSensorPollerService extends AbstractSensorPollerService {
 
-	private Logger logger = Logger.getLogger(SensorService.class.getName());
+	private Logger logger = Logger.getLogger(RandomSensorPollerService.class
+			.getName());
 
-	@Inject
-	private SensorDao sensorDao;
-
-
-	public void createSensor(Sensor sensor) {
-		logger.log(Level.INFO, "Storing new Sensor ...");
-		sensorDao.persist(sensor);
+	@Override
+	protected String getSensorName() {
+		return "Random Test Sensor";
 	}
 
-	public void enhanceSensorWithLastMeasures(Sensor sensor) {
-		List<SensorMeasure> lastMeasures = sensorDao.findLastMeasures(sensor);
-		sensor.setLastMeasures(lastMeasures);
-	}
-
-	public List<Sensor> findSensors() {
-		List<Sensor> sensors = sensorDao.findSensors();
-		return sensors;
+	@Override
+	@Schedule(second = "*/20", minute = "*", hour = "*")
+	public synchronized void readFromSensor() {
+		Sensor sensor = findOrCreateSensor();
+		SensorMeasure measure = new SensorMeasure();
+		measure.setMeasureTime(new Date());
+		measure.setValue(Math.random() * 100);
+		measure.setSensor(sensor);
+		sensor.getMeasures().add(measure);
+		logger.log(
+				Level.INFO,
+				"Setting Value " + measure.getValue() + " for Sensor "
+						+ sensor.getName() + " at "
+						+ measure.getMeasureTime() + " ...");
 	}
 }

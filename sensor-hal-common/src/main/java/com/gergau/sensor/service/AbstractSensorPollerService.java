@@ -16,38 +16,41 @@
  */
 package com.gergau.sensor.service;
 
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import com.gergau.sensor.dao.SensorDao;
+import com.gergau.sensor.entities.Location;
 import com.gergau.sensor.entities.Sensor;
-import com.gergau.sensor.entities.SensorMeasure;
 
-@Stateless
-public class SensorService {
 
-	private Logger logger = Logger.getLogger(SensorService.class.getName());
+public abstract class AbstractSensorPollerService {
+
+	private Logger logger = Logger.getLogger(AbstractSensorPollerService.class
+			.getName());
 
 	@Inject
 	private SensorDao sensorDao;
 
+	private Sensor sensor;
 
-	public void createSensor(Sensor sensor) {
-		logger.log(Level.INFO, "Storing new Sensor ...");
-		sensorDao.persist(sensor);
+	protected Sensor findOrCreateSensor() {
+		sensor = sensorDao.findLightSensorByName(getSensorName());
+		if (sensor == null) {
+			logger.info("Sensor for SensorName " + getSensorName()
+					+ " is not available creating new one");
+			sensor = new Sensor();
+			sensor.setName(getSensorName());
+			Location location = new Location();
+			location.setName("Test Location");
+			sensor.setLocation(location);
+			sensorDao.persist(sensor);
+		}
+		return sensor;
 	}
 
-	public void enhanceSensorWithLastMeasures(Sensor sensor) {
-		List<SensorMeasure> lastMeasures = sensorDao.findLastMeasures(sensor);
-		sensor.setLastMeasures(lastMeasures);
-	}
+	protected abstract String getSensorName();
 
-	public List<Sensor> findSensors() {
-		List<Sensor> sensors = sensorDao.findSensors();
-		return sensors;
-	}
+	public abstract void readFromSensor();
 }

@@ -17,6 +17,7 @@
 package com.gergau.sensor.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -30,15 +31,23 @@ import com.gergau.sensor.entities.SensorMeasure;
 @Stateless
 public class SensorDao {
 
+	private static final int DEFAULT_LAST_MEASURE_SIZE = 12;
 	@PersistenceContext(unitName = "sensor-pu")
 	private EntityManager entityManager;
 
-	public List<SensorMeasure> fetchLastMeasures() {
+	public List<SensorMeasure> findLastMeasures(Sensor sensor) {
+		return findLastMeasures(sensor, DEFAULT_LAST_MEASURE_SIZE);
+	}
+
+	public List<SensorMeasure> findLastMeasures(Sensor sensor, int measureCount) {
 		TypedQuery<SensorMeasure> query = entityManager.createNamedQuery(
 				SensorMeasure.LAST_MEASURES, SensorMeasure.class)
-				.setMaxResults(40);
-
-		return query.getResultList();
+				.setMaxResults(measureCount);
+		query.setParameter("sensor", sensor);
+		List<SensorMeasure> resultList = query.getResultList();
+		ArrayList<SensorMeasure> orderedResultList = new ArrayList<>(resultList);
+		Collections.reverse(orderedResultList);
+		return orderedResultList;
 	}
 
 	public Sensor findLightSensorByName(String name) {

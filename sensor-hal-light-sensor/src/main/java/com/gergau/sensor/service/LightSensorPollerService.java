@@ -22,36 +22,25 @@ import java.util.logging.Logger;
 
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
-import javax.inject.Inject;
 
-import com.gergau.sensor.dao.SensorDao;
-import com.gergau.sensor.entities.Location;
 import com.gergau.sensor.entities.Sensor;
 import com.gergau.sensor.entities.SensorMeasure;
 
 @Singleton
-public class LightSensorPollerService {
+public class LightSensorPollerService extends AbstractSensorPollerService {
 
 	private Logger logger = Logger.getLogger(LightSensorPollerService.class
 			.getName());
 
-	@Inject
-	private SensorDao sensorDao;
+	@Override
+	protected String getSensorName() {
+		return "Light Sensor";
+	}
 
-	private static final String SENSOR_NAME = "Random Test Sensor";
-
-	private Sensor sensor;
-
+	@Override
 	@Schedule(second = "*/20", minute = "*", hour = "*")
-	public synchronized void updateChart() {
-		sensor = sensorDao.findLightSensorByName(SENSOR_NAME);
-		if (sensor == null) {
-			sensor = new Sensor();
-			sensor.setName(SENSOR_NAME);
-			Location location = new Location();
-			location.setName("Test Location");
-			sensor.setLocation(location);
-		}
+	public synchronized void readFromSensor() {
+		Sensor sensor = findOrCreateSensor();
 		SensorMeasure measure = new SensorMeasure();
 		measure.setMeasureTime(new Date());
 		measure.setValue(Math.random() * 100);
@@ -62,6 +51,5 @@ public class LightSensorPollerService {
 				"Setting Value " + measure.getValue() + " for Sensor "
 						+ sensor.getName() + " at "
 						+ measure.getMeasureTime() + " ...");
-		sensorDao.persist(sensor);
 	}
 }

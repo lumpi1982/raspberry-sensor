@@ -20,7 +20,9 @@
 	<modules>
 		<module>../sensor-entity</module>
 		<module>../sensor-hal</module>
+		<module>../sensor-hal-common</module>
 		<module>../sensor-hal-light-sensor</module>
+		<module>../sensor-hal-random-test-sensor</module>
 		<module>../sensor-web</module>
 	</modules>
 </project>
