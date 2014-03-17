@@ -14,10 +14,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.gergau</groupId>
-	<artifactId>sensor-web</artifactId>
+	<artifactId>sensor-hal-light-sensor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
-	<url>http://tomee.apache.org</url>
+	<packaging>ejb</packaging>
 
 	<dependencies>
 		<dependency>
@@ -25,17 +24,6 @@
 			<artifactId>javaee-api</artifactId>
 			<version>6.0-5</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-			<version>3.5</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.gergau</groupId>
-			<artifactId>sensor-entity</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 
@@ -52,10 +40,22 @@
 			<artifactId>arquillian-junit-container</artifactId> <version>1.0.3.Final</version> 
 			<scope>test</scope> </dependency> <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
 			<version>4.11</version> <scope>test</scope> </dependency> -->
+		<dependency>
+			<groupId>com.gergau</groupId>
+			<artifactId>sensor-entity</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ejb-plugin</artifactId>
+				<configuration>
+					<ejbVersion>3.0</ejbVersion>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -85,34 +85,6 @@
 				<configuration>
 					<context>ROOT</context>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.openjpa</groupId>
-				<artifactId>openjpa-maven-plugin</artifactId>
-				<version>2.2.0</version>
-				<configuration>
-					<includes>**/entities/*.class</includes>
-					<excludes>**/entities/XML*.class</excludes>
-					<addDefaultConstructor>true</addDefaultConstructor>
-					<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
-				</configuration>
-				<executions>
-					<execution>
-						<id>enhancer</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>enhance</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.openjpa</groupId>
-						<artifactId>openjpa</artifactId>
-						<!-- set the version to be the same as the level in your runtime -->
-						<version>2.2.0</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
 		<pluginManagement>

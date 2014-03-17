@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
-import javax.inject.Inject;
 
 import com.gergau.sensor.dao.SensorDao;
 import com.gergau.sensor.entities.Sensor;
@@ -35,7 +35,7 @@ public class LightSensorPollerService {
 	private Logger logger = Logger.getLogger(LightSensorPollerService.class
 			.getName());
 
-	@Inject
+	@EJB
 	private SensorDao sensorDao;
 
 	private List<Sensor> lightSensors;

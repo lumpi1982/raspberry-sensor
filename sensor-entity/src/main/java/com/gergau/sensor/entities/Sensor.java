@@ -30,7 +30,7 @@ public class Sensor {
 	@NotNull
 	private String name;
 
-	@OneToMany(cascade=CascadeType.PERSIST, fetch= FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private List<SensorMeasure> measures;
 
 	@NotNull

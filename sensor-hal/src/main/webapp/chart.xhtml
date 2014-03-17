@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+</h:head>
+<f:event type="preRenderView" listener="#{sensorController.initModel()}" />
+<h:body>
+asdf
+<h:form>
+		<p:lineChart id="linear" value="#{lightSensorModel.linearModel}"
+			legendPosition="e" title="Linear Chart" minY="0" maxY="100"
+			style="height:300px" />
+		<p:poll interval="5" update="linear" listener="#{sensorController.initModel()}" />
+		<p:commandButton value="Create Sensor" actionListener="#{sensorController.createSensor()}" />
+	</h:form>
+</h:body>
+</html>
