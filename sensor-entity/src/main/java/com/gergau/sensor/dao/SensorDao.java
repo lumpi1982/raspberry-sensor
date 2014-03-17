@@ -33,10 +33,6 @@ public class SensorDao {
 	@PersistenceContext(unitName = "sensor-pu")
 	private EntityManager entityManager;
 
-	public void persist(Sensor sensor) {
-		entityManager.persist(sensor);
-	}
-
 	public List<SensorMeasure> fetchLastMeasures() {
 		TypedQuery<SensorMeasure> query = entityManager.createNamedQuery(
 				SensorMeasure.LAST_MEASURES, SensorMeasure.class)
@@ -45,12 +41,29 @@ public class SensorDao {
 		return query.getResultList();
 	}
 
-	public List<Sensor> findLightSensors() {
+	public Sensor findLightSensorByName(String name) {
+		TypedQuery<Sensor> query = entityManager.createNamedQuery(
+				Sensor.FIND_BY_NAME, Sensor.class);
+		query.setParameter("name", name);
+		List<Sensor> resultList = query.getResultList();
+		if (resultList == null || resultList.size() != 1) {
+			return null;
+		}
+		// Sensor sensor = query.getSingleResult();
+		// return sensor;
+		return resultList.get(0);
+	}
+
+	public List<Sensor> findSensors() {
 		List<Sensor> resultList = entityManager.createNamedQuery(Sensor.FIND_ALL, Sensor.class)
 				.getResultList();
 		if(resultList==null) {
 			resultList=new ArrayList<>();
 		}
 		return resultList;
+	}
+
+	public void persist(Sensor sensor) {
+		entityManager.persist(sensor);
 	}
 }

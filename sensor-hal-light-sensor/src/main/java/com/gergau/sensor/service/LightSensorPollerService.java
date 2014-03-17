@@ -17,15 +17,15 @@
 package com.gergau.sensor.service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
+import javax.inject.Inject;
 
 import com.gergau.sensor.dao.SensorDao;
+import com.gergau.sensor.entities.Location;
 import com.gergau.sensor.entities.Sensor;
 import com.gergau.sensor.entities.SensorMeasure;
 
@@ -35,36 +35,33 @@ public class LightSensorPollerService {
 	private Logger logger = Logger.getLogger(LightSensorPollerService.class
 			.getName());
 
-	@EJB
+	@Inject
 	private SensorDao sensorDao;
 
-	private List<Sensor> lightSensors;
+	private static final String SENSOR_NAME = "Random Test Sensor";
 
-	public List<Sensor> getLightSensors() {
-		return lightSensors;
-	}
-
-	public void setLightSensors(List<Sensor> lightSensors) {
-		this.lightSensors = lightSensors;
-	}
+	private Sensor sensor;
 
 	@Schedule(second = "*/20", minute = "*", hour = "*")
 	public synchronized void updateChart() {
-		lightSensors = sensorDao.findLightSensors();
-		for (Sensor lightSensor : lightSensors) {
-			if (lightSensor.getName() == null) {
-				lightSensor.setName("Sensor_" + lightSensor);
-			}
-			SensorMeasure measure = new SensorMeasure();
-			measure.setMeasureTime(new Date());
-			measure.setValue(Math.random() * 100);
-			measure.setSensor(lightSensor);
-			lightSensor.getMeasures().add(measure);
-			logger.log(
-					Level.INFO,
-					"Setting Value " + measure.getValue() + " for Sensor "
-							+ lightSensor.getName() + " at "
-							+ measure.getMeasureTime() + " ...");
+		sensor = sensorDao.findLightSensorByName(SENSOR_NAME);
+		if (sensor == null) {
+			sensor = new Sensor();
+			sensor.setName(SENSOR_NAME);
+			Location location = new Location();
+			location.setName("Test Location");
+			sensor.setLocation(location);
 		}
+		SensorMeasure measure = new SensorMeasure();
+		measure.setMeasureTime(new Date());
+		measure.setValue(Math.random() * 100);
+		measure.setSensor(sensor);
+		sensor.getMeasures().add(measure);
+		logger.log(
+				Level.INFO,
+				"Setting Value " + measure.getValue() + " for Sensor "
+						+ sensor.getName() + " at "
+						+ measure.getMeasureTime() + " ...");
+		sensorDao.persist(sensor);
 	}
 }

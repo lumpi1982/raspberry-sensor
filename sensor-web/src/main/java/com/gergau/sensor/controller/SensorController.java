@@ -16,6 +16,7 @@
  */
 package com.gergau.sensor.controller;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +51,13 @@ public class SensorController {
 
 	public String initModel() {
 		logger.log(Level.INFO, "Init Model ...");
-		sensorModel.setSensors(sensorService.findLightSensors());
+		List<Sensor> sensors = sensorService.findSensors();
+		for (Sensor sensor : sensors) {
+			logger.fine("Found sensor with name: " + sensor.getName() + " and "
+					+ sensor.getMeasures().size() + " measures");
+		}
+		logger.log(Level.FINER, "Found " + sensors.size() + " sensors.");
+		sensorModel.setSensors(sensors);
 		return "";
 	}
 

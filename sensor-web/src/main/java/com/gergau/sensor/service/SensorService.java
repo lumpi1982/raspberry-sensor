@@ -39,8 +39,8 @@ public class SensorService {
 		sensorDao.persist(sensor);
 	}
 
-	public List<Sensor> findLightSensors() {
-		List<Sensor> sensors = sensorDao.findLightSensors();
+	public List<Sensor> findSensors() {
+		List<Sensor> sensors = sensorDao.findSensors();
 		return sensors;
 	}
 }
