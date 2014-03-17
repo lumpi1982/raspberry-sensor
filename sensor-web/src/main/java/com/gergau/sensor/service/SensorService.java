@@ -16,6 +16,7 @@
  */
 package com.gergau.sensor.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +43,8 @@ public class SensorService {
 	}
 
 	public void enhanceSensorWithLastMeasures(Sensor sensor) {
-		List<SensorMeasure> lastMeasures = sensorDao.findLastMeasures(sensor);
+		List<SensorMeasure> lastMeasures = sensorDao.findLastMeasures(sensor,
+				new Date(System.currentTimeMillis() - 24 * 3600 * 1000));
 		sensor.setLastMeasures(lastMeasures);
 	}
 

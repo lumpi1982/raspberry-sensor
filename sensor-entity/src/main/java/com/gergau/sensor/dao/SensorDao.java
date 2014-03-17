@@ -18,6 +18,7 @@ package com.gergau.sensor.dao;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -42,11 +43,22 @@ public class SensorDao {
 		return findLastMeasures(sensor, DEFAULT_LAST_MEASURE_SIZE);
 	}
 
+	public List<SensorMeasure> findLastMeasures(Sensor sensor, Date date) {
+		TypedQuery<SensorMeasure> query = entityManager.createNamedQuery(
+				SensorMeasure.LAST_MEASURES_SINCE_TIMESTAMP,
+				SensorMeasure.class);
+		query.setParameter("sensor", sensor);
+		query.setParameter("date", date);
+		List<SensorMeasure> resultList = query.getResultList();
+		ArrayList<SensorMeasure> orderedResultList = new ArrayList<>(resultList);
+		Collections.reverse(orderedResultList);
+		return orderedResultList;
+	}
+
 	public List<SensorMeasure> findLastMeasures(Sensor sensor, int measureCount) {
 		TypedQuery<SensorMeasure> query = entityManager.createNamedQuery(
-				SensorMeasure.LAST_MEASURES, SensorMeasure.class)
-				.setMaxResults(measureCount);
-		query.setParameter("sensor", sensor);
+				SensorMeasure.LAST_MEASURES, SensorMeasure.class);
+		query.setParameter("sensor", sensor).setMaxResults(measureCount);
 		List<SensorMeasure> resultList = query.getResultList();
 		ArrayList<SensorMeasure> orderedResultList = new ArrayList<>(resultList);
 		Collections.reverse(orderedResultList);
