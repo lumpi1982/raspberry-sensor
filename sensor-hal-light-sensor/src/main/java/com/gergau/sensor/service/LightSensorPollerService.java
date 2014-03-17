@@ -25,12 +25,18 @@ import javax.ejb.Singleton;
 
 import com.gergau.sensor.entities.Sensor;
 import com.gergau.sensor.entities.SensorMeasure;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.RaspiPin;
 
 @Singleton
 public class LightSensorPollerService extends AbstractSensorPollerService {
 
 	private Logger logger = Logger.getLogger(LightSensorPollerService.class
 			.getName());
+	private static final long WAIT_TIMER = 1;
 
 	@Override
 	protected String getSensorName() {
@@ -43,13 +49,36 @@ public class LightSensorPollerService extends AbstractSensorPollerService {
 		Sensor sensor = findOrCreateSensor();
 		SensorMeasure measure = new SensorMeasure();
 		measure.setMeasureTime(new Date());
-		measure.setValue(Math.random() * 100);
+		measure.setValue((double) readSensor());
 		measure.setSensor(sensor);
 		sensor.getMeasures().add(measure);
-		logger.log(
-				Level.INFO,
+		logger.info(
 				"Setting Value " + measure.getValue() + " for Sensor "
 						+ sensor.getName() + " at "
 						+ measure.getMeasureTime() + " ...");
 	}
+
+	private long readSensor() {
+		GpioController gpio = GpioFactory.getInstance();
+		GpioPinDigitalOutput sensorPin = gpio.provisionDigitalMultipurposePin(
+				RaspiPin.GPIO_01, PinMode.DIGITAL_OUTPUT);
+		while (sensorPin.isHigh()) {
+			try {
+				Thread.sleep(WAIT_TIMER);
+			} catch (InterruptedException e) {
+				logger.log(Level.SEVERE, "Got an exception: " + e.getMessage(),
+						e);
+			}
+			logger.info("Waiting till Pin is pulled to low ...");
+		}
+		long count = 0;
+		sensorPin.setMode(PinMode.DIGITAL_INPUT);
+		while (sensorPin.isLow()) {
+			count++;
+		}
+		logger.fine("Changed after: " + count);
+		gpio.unprovisionPin(sensorPin);
+		return count;
+	}
+
 }

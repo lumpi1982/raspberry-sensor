@@ -53,7 +53,7 @@ public class SensorController {
 		List<Sensor> sensors = sensorService.findSensors();
 		for (Sensor sensor : sensors) {
 			logger.fine("Found sensor with name: " + sensor.getName());
-			sensorService.enhanceSensorWithLastMeasures(sensor);
+			sensorService.enhanceSensorWithLastMeasures(sensor, 20);
 		}
 		logger.log(Level.FINER, "Found " + sensors.size() + " sensors.");
 		sensorModel.setSensors(sensors);

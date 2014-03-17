@@ -14,9 +14,9 @@
 asdf
 <h:form>
 		<p:lineChart id="linear" value="#{lightSensorModel.linearModel}"
-			legendPosition="e" title="Linear Chart" minY="0" maxY="100"
-			style="height:300px" />
-		<p:poll interval="15" update="linear" listener="#{sensorController.initModel()}" />
+			legendPosition="w" title="Sensor Values" minY="#{lightSensorModel.minValue}" maxY="#{lightSensorModel.maxValue}"
+			style="height:600px" />
+		<p:poll interval="20" update="linear" listener="#{sensorController.initModel()}" />
 		<p:commandButton value="Create Sensor" actionListener="#{sensorController.createSensor()}" />
 	</h:form>
 </h:body>

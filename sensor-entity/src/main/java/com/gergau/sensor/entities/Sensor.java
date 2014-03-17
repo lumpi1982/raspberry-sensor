@@ -19,10 +19,12 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NamedQueries({
 	@NamedQuery(name = Sensor.FIND_ALL, query = "select s from Sensor s"),
-	@NamedQuery(name = Sensor.FIND_BY_NAME, query = "select s from Sensor s where s.name=:name") })
+	@NamedQuery(name = Sensor.FIND_BY_NAME, query = "select s from Sensor s where s.name=:name"),
+		@NamedQuery(name = Sensor.DELETE_BY_NAME, query = "delete from Sensor s where s.name=:name") })
 public class Sensor {
 	public final static String FIND_ALL = "sensor.findAll";
 	public final static String FIND_BY_NAME = "sensor.findByName";
+	public final static String DELETE_BY_NAME = "sensor.deleteByName";
 
 	@Id
 	@GeneratedValue

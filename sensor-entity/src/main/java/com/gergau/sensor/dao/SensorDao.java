@@ -19,6 +19,7 @@ package com.gergau.sensor.dao;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,6 +31,8 @@ import com.gergau.sensor.entities.SensorMeasure;
 
 @Stateless
 public class SensorDao {
+
+	private Logger logger = Logger.getLogger(SensorDao.class.getName());
 
 	private static final int DEFAULT_LAST_MEASURE_SIZE = 12;
 	@PersistenceContext(unitName = "sensor-pu")
@@ -56,6 +59,15 @@ public class SensorDao {
 		query.setParameter("name", name);
 		List<Sensor> resultList = query.getResultList();
 		if (resultList == null || resultList.size() != 1) {
+			if (resultList.size() > 1) {
+				logger.warning("Multiple Sensors with same name " + name
+						+ " found - deleteing them now ...");
+				// getting rid of unvalid data
+				TypedQuery<Sensor> deleteQuery = entityManager
+						.createNamedQuery(Sensor.DELETE_BY_NAME, Sensor.class);
+				deleteQuery.setParameter("name", name);
+				deleteQuery.executeUpdate();
+			}
 			return null;
 		}
 		// Sensor sensor = query.getSingleResult();

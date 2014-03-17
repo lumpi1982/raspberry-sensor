@@ -45,17 +45,29 @@
 			<artifactId>sensor-entity</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>com.gergau</groupId>
-			<artifactId>sensor-hal-light-sensor</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.gergau</groupId>
-			<artifactId>sensor-hal-random-test-sensor</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>raspberry</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.gergau</groupId>
+					<artifactId>sensor-hal-light-sensor</artifactId>
+					<version>0.0.1-SNAPSHOT</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>local-test</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.gergau</groupId>
+					<artifactId>sensor-hal-random-test-sensor</artifactId>
+					<version>0.0.1-SNAPSHOT</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>

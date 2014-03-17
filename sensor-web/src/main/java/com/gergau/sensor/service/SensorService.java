@@ -46,6 +46,11 @@ public class SensorService {
 		sensor.setLastMeasures(lastMeasures);
 	}
 
+	public void enhanceSensorWithLastMeasures(Sensor sensor, int measureCount) {
+		List<SensorMeasure> lastMeasures = sensorDao.findLastMeasures(sensor,measureCount);
+		sensor.setLastMeasures(lastMeasures);
+	}
+
 	public List<Sensor> findSensors() {
 		List<Sensor> sensors = sensorDao.findSensors();
 		return sensors;
